@@ -14,7 +14,7 @@ separator = '\n================================\n'
 
 def convert_expression(expression: str) -> str:
     """转换表达式中的中文乘号、除号和幂运算符号，并处理小数点。"""
-    expression = expression.replace('×', '*').replace('÷', '/').replace('^', '**').replace('{','(').replace('}',')').replace('[','(').replace(']',')').replace('〖','(').replace('〗',')').replace(' ','')
+    expression = expression.replace('×', '*').replace('÷', '/').replace('^', '**').replace('{','(').replace('}',')').replace('[','(').replace(']',')').replace('〖','(').replace('〗',')').replace(' ','').replace('\/', '/')
     expression = re.sub(r'∜\((.*?)\)', r'(\1)**(1/4)', expression)
     expression = re.sub(r'√\((.*?)\)', r'(\1)**(1/2)', expression)
     expression = re.sub(r'(\d|\))(\()', r'\1*\2', expression)
