@@ -18,12 +18,51 @@ debug = Fore.YELLOW + '[!debug]' + Fore.RESET
 done = Fore.CYAN + '[>]' + Fore.RESET
 separator = '\n================================\n'
 
+def convert_sqrt(expression):
+    while '√' in expression:
+        start_index = expression.find('√') + 1
+        # Initialize the parentheses counter
+        parentheses_count = 0
+        for i in range(start_index, len(expression)):
+            if expression[i] == '(':
+                parentheses_count += 1
+            elif expression[i] == ')':
+                parentheses_count -= 1
+            # When the counter is zero, we found the matching closing parenthesis
+            if parentheses_count == 0:
+                # Insert the power of (1/2) at the right position
+                expression = (expression[:start_index-1] + '(' + expression[start_index:i+1] + 
+                              ')**(1/2)' + expression[i+1:])
+                break
+    return expression
+
+def convert_sqrt_4(expression):
+    while '√' in expression:
+        start_index = expression.find('∜') + 1
+        # Initialize the parentheses counter
+        parentheses_count = 0
+        for i in range(start_index, len(expression)):
+            if expression[i] == '(':
+                parentheses_count += 1
+            elif expression[i] == ')':
+                parentheses_count -= 1
+            # When the counter is zero, we found the matching closing parenthesis
+            if parentheses_count == 0:
+                # Insert the power of (1/4) at the right position
+                expression = (expression[:start_index-1] + '(' + expression[start_index:i+1] + 
+                              ')**(1/4)' + expression[i+1:])
+                break
+    return expression
+
 
 def convert_expression(expression: str) -> str:
     """转换表达式中的中文乘号、除号和幂运算符号，并处理小数点。"""
     expression = expression.replace('×', '*').replace('÷', '/').replace('^', '**').replace('{','(').replace('}',')').replace('[','(').replace(']',')').replace('〖','(').replace('〗',')').replace(' ','').replace('\/', '/').replace('%', '*0.01')
-    expression = re.sub(r'∜\((.*?)\)', r'(\1)**(1/4)', expression)
-    expression = re.sub(r'√\((.*?)\)', r'(\1)**(1/2)', expression)
+    """转换万恶的根号符号"""
+    expression = convert_sqrt(expression)
+    expression = convert_sqrt_4(expression)
+    # expression = re.sub(r'∜\((.*?)\)', r'(\1)**(1/4)', expression)
+    # expression = re.sub(r'√\((.*?)\)', r'(\1)**(1/2)', expression)
     expression = re.sub(r'(\d|\))(\()', r'\1*\2', expression)
     expression = re.sub(r'(\d)(\*\*\(1/2\))', r'\1*\2', expression)
     print(f'{debug} 转换结果：{expression}')
@@ -32,7 +71,7 @@ def convert_expression(expression: str) -> str:
 def calculate_expression(expression: str) -> str:
     """计算转换后的数学表达式的结果。"""
     try:
-        result = round(eval(convert_expression(expression)), 4) #四舍五入取小数点后n位数
+        result = round(eval(convert_expression(expression)), 4) # round it!
         pyperclip.copy(result)
         return f"{success} 计算结果为：{result}\n{success} 输入\"stop\"终止程序\n{separator}"
     except Exception as e:
