@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+## wordFormulaCalculator
+### github.com/Dax233/Tools
+#### MICENCE: AGPL
+##### By: BakaDax
+##### 更新于2024/06/16
+
 import re
 import pyperclip
 from colorama import init, Fore

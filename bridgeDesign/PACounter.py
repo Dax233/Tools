@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+## PACounter
+### github.com/Dax233/Tools
+#### MICENCE: AGPL
+##### By: BakaDax
+##### 更新于2024/06/16
+
 q1 = 18.9926
 q2 = 19.8936
 m2 = 19.845

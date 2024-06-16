@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+## calibrationK0K1Effection
+### github.com/Dax233/Tools
+#### MICENCE: AGPL
+##### By: BakaDax
+##### 更新于2024/06/16
+
+
 import re
 from colorama import init, Fore
 
