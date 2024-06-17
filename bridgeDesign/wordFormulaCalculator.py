@@ -92,7 +92,7 @@ def convert_expression(expression: str) -> str:
     # expression = re.sub(r'√\((.*?)\)', r'(\1)**(1/2)', expression)
     expression = re.sub(r'(\d|\))(\()', r'\1*\2', expression)
     expression = re.sub(r'(\d)(\*\*\(1/2\))', r'\1*\2', expression)
-    print(f'{debug} 转换结果：{expression}')
+    # print(f'{debug} 转换结果：{expression}')
     return expression
 
 def calculate_expression(expression: str) -> str:
