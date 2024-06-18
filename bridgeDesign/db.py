@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, flash, render_template, request, redirect, url_for
 import sqlite3
 import os
 import threading
@@ -42,6 +42,8 @@ for filename, content in html_files.items():
 
 # Flask应用程序
 app = Flask(__name__, template_folder=templates_folder)
+app.secret_key = '123456'
+
 
 # 连接到SQLite数据库
 def get_db_connection():
@@ -66,9 +68,16 @@ def add():
         name = request.form['name']
         value = request.form['value']
         conn = get_db_connection()
-        conn.execute('INSERT INTO parameters (name, value) VALUES (?, ?)',
-                     (name, value))
-        conn.commit()
+        cur = conn.cursor()
+        cur.execute('SELECT * FROM parameters WHERE name = ?', (name,))
+        existing_param = cur.fetchone()
+        if existing_param:
+            flash(f'警告：参数 "{name}" 已存在。')
+        else:
+            conn.execute('INSERT INTO parameters (name, value) VALUES (?, ?)',
+                         (name, value))
+            conn.commit()
+            flash(f'参数 "{name}" 已添加。')
         conn.close()
         return redirect(url_for('index'))
     return render_template('add.html')

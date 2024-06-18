@@ -1,0 +1,62 @@
+<html>
+<head>
+    <title>Parameter List</title>
+</head>
+<body>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    <h1>参数列表</h1>
+    <form method="post" action="/add">
+        <input type="text" name="name" placeholder="Parameter Name" required />
+        <input type="text" name="value" placeholder="Value" required />
+        <input type="submit" value="Add Parameter" />
+    </form>
+    <input type="text" id="searchBox" onkeyup="searchFunction()" placeholder="Search for parameters..">
+    <table id="parametersTable">
+        <tr>
+            <th>Name</th>
+            <th>Value</th>
+            <th>Actions</th>
+        </tr>
+        {% for parameter in parameters %}
+        <tr>
+            <td>{{ parameter.name }}</td>
+            <td>{{ parameter.value }}</td>
+            <td>
+                <a href="/{{ parameter.id }}/edit">Edit</a>
+                <form method="post" action="/{{ parameter.id }}/delete">
+                    <input type="submit" value="Delete" />
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <script>
+        function searchFunction() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("searchBox");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("parametersTable");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>

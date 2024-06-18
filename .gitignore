@@ -1,3 +1,7 @@
 ENV_DIR
-database
 bridgeDesign/k0k1.txt
+bridgeDesign/database/my_parameters.db
+database/my_parameters.db
+database/templates/add.html
+database/templates/edit.html
+database/templates/index.html
