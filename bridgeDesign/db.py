@@ -1,8 +1,14 @@
+# -*- coding: utf-8 -*-
+## db
+### github.com/Dax233/Tools
+#### MICENCE: AGPL
+##### By: BakaDax
+##### 更新于2024/06/18
+
 from flask import Flask, flash, render_template, request, redirect, url_for
 import sqlite3
 import os
 import threading
-from sympy import sympify, SympifyError
 
 # 确保database文件夹存在
 database_folder = 'database'
