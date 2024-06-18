@@ -1,43 +1,8 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Parameter List</title>
-</head>
-<body>
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <ul>
-        {% for message in messages %}
-          <li>{{ message }}</li>
-        {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
-    <h1>参数列表</h1>
-    <form method="post" action="/add">
-        <input type="text" name="name" placeholder="Parameter Name" required />
-        <input type="text" name="value" placeholder="Value" required />
-        <input type="submit" value="Add Parameter" />
-    </form>
-    <input type="text" id="searchBox" onkeyup="searchFunction()" placeholder="Search for parameters..">
-    <table id="parametersTable">
-        <tr>
-            <th>Name</th>
-            <th>Value</th>
-            <th>Actions</th>
-        </tr>
-        {% for parameter in parameters %}
-        <tr>
-            <td>{{ parameter.name }}</td>
-            <td>{{ parameter.value }}</td>
-            <td>
-                <a href="/{{ parameter.id }}/edit">Edit</a>
-                <form method="post" action="/{{ parameter.id }}/delete">
-                    <input type="submit" value="Delete" />
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
     <script>
         function searchFunction() {
             var input, filter, table, tr, td, i, txtValue;
@@ -58,5 +23,50 @@
             }
         }
     </script>
+</head>
+<body>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class="flashes">
+        {% for message in messages %}
+          <li><strong>{{ message }}</strong></li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <h1>Add an Expression</h1>
+    <form method="post" action="/add_expression">
+        <input type="text" name="expression" placeholder="Enter expression (e.g., 2*3+1)" required />
+        <input type="submit" value="Add Expression" />
+    </form>
+
+    <h1>Add a Parameter</h1>
+    <form method="post" action="/add">
+        <input type="text" name="name" placeholder="Parameter Name" required />
+        <input type="text" name="value" placeholder="Value" required />
+        <input type="submit" value="Add Parameter" />
+    </form>
+    <input type="text" id="searchBox" onkeyup="searchFunction()" placeholder="Search for parameters..">
+    
+    <table id="parametersTable">
+        <tr>
+            <th>Name</th>
+            <th>Value</th>
+            <th>Actions</th>
+        </tr>
+        {% for parameter in parameters %}
+        <tr>
+            <td>{{ parameter.name }}</td>
+            <td>{{ parameter.value }}</td>
+            <td>
+                <a href="/{{ parameter.id }}/edit">Edit</a>
+                <form method="post" action="/{{ parameter.id }}/delete">
+                    <input type="submit" value="Delete" />
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
 </body>
 </html>

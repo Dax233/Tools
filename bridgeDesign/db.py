@@ -2,7 +2,7 @@ from flask import Flask, flash, render_template, request, redirect, url_for
 import sqlite3
 import os
 import threading
-import re
+from sympy import sympify, SympifyError
 
 # 确保database文件夹存在
 database_folder = 'database'
@@ -51,6 +51,35 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+def parse_input(input_str):
+        # 从左到右找到第一个等号，等号左边的内容为变量名
+        equal_index = input_str.find('=')
+        if equal_index == -1:
+            return None, None, None
+        name = input_str[:equal_index].strip()
+
+        # 从右到左找到最后一个等号，等号右边的内容为值和单位
+        equal_index_r = input_str.rfind('=')
+        if equal_index_r == -1:
+            return None, None, None
+        value_unit_str = input_str[equal_index_r + 1:].strip()
+
+        # 找到值和单位的分界点，通常是数字和字母之间
+        for i, char in enumerate(value_unit_str):
+            if not char.isdigit() and char not in '.eE':
+                # 分割值和单位
+                value = value_unit_str[:i].strip()
+                units = value_unit_str[i:].strip()
+                break
+        else:
+            # 如果没有找到单位，整个字符串都是值
+            value = value_unit_str
+            units = ''
+        
+        action = name.split(' ')[0]
+        name = name.split(' ')[1] 
+        return action, name, value + ' ' + units
+
 # 首页路由，显示所有参数
 @app.route('/')
 def index():
@@ -81,6 +110,29 @@ def add():
         conn.close()
         return redirect(url_for('index'))
     return render_template('add.html')
+
+@app.route('/add_expression', methods=('POST',))
+def add_expression():
+    if request.method == 'POST':
+        expression = request.form['expression']
+        full_command = f'add {expression}'
+        action, name, value = parse_input(full_command)
+        if action == 'add':
+            conn = get_db_connection()
+            cur = conn.cursor()
+            cur.execute('SELECT * FROM parameters WHERE name = ?', (name,))
+            existing_param = cur.fetchone()
+            if existing_param:
+                flash(f'警告：参数 "{name}" 已存在。')
+            else:
+                cur.execute('INSERT INTO parameters (name, value) VALUES (?, ?)',
+                            (name, value))
+                conn.commit()
+                flash(f'参数 "{name}" 已添加。值为：{value}')
+            conn.close()
+        else:
+            flash('无法识别的指令，请重新输入。')
+        return redirect(url_for('index'))
 
 # 编辑参数路由
 @app.route('/<int:id>/edit', methods=('GET', 'POST'))
@@ -134,34 +186,7 @@ def cli_thread():
         c.execute("UPDATE parameters SET value=? WHERE name=?", (value, name))
         conn.commit()
 
-    def parse_input(input_str):
-        # 从左到右找到第一个等号，等号左边的内容为变量名
-        equal_index = input_str.find('=')
-        if equal_index == -1:
-            return None, None, None
-        name = input_str[:equal_index].strip()
-
-        # 从右到左找到最后一个等号，等号右边的内容为值和单位
-        equal_index_r = input_str.rfind('=')
-        if equal_index_r == -1:
-            return None, None, None
-        value_unit_str = input_str[equal_index_r + 1:].strip()
-
-        # 找到值和单位的分界点，通常是数字和字母之间
-        for i, char in enumerate(value_unit_str):
-            if not char.isdigit() and char not in '.eE':
-                # 分割值和单位
-                value = value_unit_str[:i].strip()
-                units = value_unit_str[i:].strip()
-                break
-        else:
-            # 如果没有找到单位，整个字符串都是值
-            value = value_unit_str
-            units = ''
-        
-        action = name.split(' ')[0]
-        name = name.split(' ')[1] 
-        return action, name, value + ' ' + units
+    
 
     while True:
         input_str = input("请输入指令：")
