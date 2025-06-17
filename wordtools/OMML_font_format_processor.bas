@@ -39,18 +39,12 @@ Sub BatchChangeEquationFont_NoItalicNumbers()
             ' 只对半角字符出手
             If AscW(singleChar.text) >= 0 And AscW(singleChar.text) <= 255 Then
 
-                ' 先判断它是不是一个数字...
-                If IsNumeric(singleChar.text) Then
-                    singleChar.Font.Name = "Times New Roman"
-                    singleChar.Font.Italic = False
-                Else
-                    ' 记住斜体状态...
-                    isItalic = singleChar.Font.Italic
-                    ' 更换字体...
-                    singleChar.Font.Name = "Times New Roman"
-                    ' 保持斜体状态...
-                    singleChar.Font.Italic = isItalic
-                End If
+                ' 记住斜体状态...
+                isItalic = singleChar.Font.Italic
+                ' 更换字体...
+                singleChar.Font.Name = "Times New Roman"
+                ' 保持斜体状态...
+                singleChar.Font.Italic = isItalic
 
             End If
         Next singleChar
