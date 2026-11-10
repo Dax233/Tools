@@ -5,3 +5,12 @@ database/my_parameters.db
 database/templates/add.html
 database/templates/edit.html
 database/templates/index.html
+
+# Python / 测试 / 打包产物
+.venv/
+__pycache__/
+*.py[co]
+.pytest_cache/
+build/
+dist/
+*.egg-info/
