@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "formulacalc"
+version = "1.0.0"
+description = "把 Word/UnicodeMath 线性公式安全地算成数：无 eval 的独立表达式解析器"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "AGPL-3.0-or-later" }
+authors = [{ name = "BakaDax" }]
+keywords = ["unicode-math", "word", "calculator", "parser", "cli"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
+    "Topic :: Scientific/Engineering :: Mathematics",
+]
+# 零运行时依赖；剪贴板是可选功能
+dependencies = []
+
+[project.optional-dependencies]
+clip = ["pyperclip>=1.8"]
+
+[project.scripts]
+formulacalc = "formulacalc.cli:main"
+
+[tool.setuptools]
+packages = ["formulacalc"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
